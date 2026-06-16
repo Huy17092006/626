@@ -492,18 +492,35 @@ document.querySelectorAll('input[name="pay-method"]').forEach(radio => {
     qrWrap && qrWrap.classList.toggle('hidden', !['momo','zalopay'].includes(selectedPayMethod));
     bankWrap && bankWrap.classList.toggle('hidden', selectedPayMethod !== 'bank');
 
+    const MOMO_PHONE    = '0968679993';
+    const ZALOPAY_PHONE = '0968679993';
+    const TPBANK_STK    = '0968679993';
+    const TPBANK_NAME   = 'PHUNG GIA HUY';
+
     if (selectedPayMethod === 'momo') {
       const label = $('qr-label');
-      if (label) label.textContent = 'Quét mã QR bằng ứng dụng MoMo để thanh toán';
+      if (label) label.textContent = 'Chuyển tiền MoMo đến số:';
+      const img = $('qr-pay-img');
+      if (img) img.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=2|99|${MOMO_PHONE}|||0|0||||`;
+      const ph = $('qr-phone-number');
+      if (ph) ph.textContent = MOMO_PHONE.replace(/(\d{4})(\d{3})(\d{3})/, '$1 $2 $3');
     } else if (selectedPayMethod === 'zalopay') {
       const label = $('qr-label');
-      if (label) label.textContent = 'Quét mã QR bằng ứng dụng ZaloPay để thanh toán';
+      if (label) label.textContent = 'Chuyển tiền ZaloPay đến số:';
+      const img = $('qr-pay-img');
+      if (img) img.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=zalopay%3A${ZALOPAY_PHONE}`;
+      const ph = $('qr-phone-number');
+      if (ph) ph.textContent = ZALOPAY_PHONE.replace(/(\d{4})(\d{3})(\d{3})/, '$1 $2 $3');
     }
 
     if (selectedPayMethod === 'bank') {
       const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
       const code = $('bank-transfer-code');
-      if (code) code.textContent = `TAPHOAONLINE-${Date.now().toString().slice(-6)}-${total}`;
+      const orderCode = `TAPHOAONLINE-${Date.now().toString().slice(-6)}`;
+      if (code) code.textContent = orderCode;
+      // Update VietQR with amount
+      const bankQr = $('bank-qr-img');
+      if (bankQr) bankQr.src = `https://img.vietqr.io/image/TPB-${TPBANK_STK}-compact2.jpg?amount=${total}&addInfo=${encodeURIComponent(orderCode)}&accountName=${encodeURIComponent(TPBANK_NAME)}`;
     }
   });
 });

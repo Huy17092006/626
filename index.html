@@ -693,15 +693,25 @@
 
         <!-- Momo / ZaloPay / Bank panels -->
         <div class="qr-pay-wrap hidden" id="qr-pay-wrap">
-          <div class="qr-icon"><i class="fas fa-qrcode"></i></div>
-          <p id="qr-label">Quét mã QR để thanh toán</p>
-          <img src="https://placehold.co/200x200/ffffff/0a0f2c?text=QR+Code" alt="QR Code" class="qr-img" />
+          <p id="qr-label">Quét mã QR bằng ứng dụng MoMo để thanh toán</p>
+          <img id="qr-pay-img"
+            src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=0968679993"
+            alt="QR Code" class="qr-img" />
+          <div class="qr-phone-info" id="qr-phone-info">
+            <i class="fas fa-mobile-screen"></i>
+            <span id="qr-phone-number">0968 679 993</span>
+          </div>
         </div>
         <div class="bank-transfer-wrap hidden" id="bank-transfer-wrap">
+          <div class="bank-qr-wrap">
+            <img id="bank-qr-img"
+              src="https://img.vietqr.io/image/TPB-0968679993-compact2.jpg?accountName=PHUNG+GIA+HUY"
+              alt="QR Chuyển khoản TPBank" class="qr-img" />
+          </div>
           <div class="bank-info">
-            <div class="bank-row"><span>Ngân hàng:</span><strong>Vietcombank</strong></div>
-            <div class="bank-row"><span>Số tài khoản:</span><strong>1234567890</strong></div>
-            <div class="bank-row"><span>Tên tài khoản:</span><strong>CONG TY TAP HOA ONLINE</strong></div>
+            <div class="bank-row"><span>Ngân hàng:</span><strong>TPBank</strong></div>
+            <div class="bank-row"><span>Số tài khoản:</span><strong>0968679993</strong></div>
+            <div class="bank-row"><span>Tên tài khoản:</span><strong>PHUNG GIA HUY</strong></div>
             <div class="bank-row"><span>Nội dung CK:</span><strong id="bank-transfer-code">TAPHOAONLINE-XXXXXX</strong></div>
           </div>
         </div>
