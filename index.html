@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LuxShop – Khám Phá Bộ Sưu Tập Mới</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- Splash Screen -->
+  <div id="splash-screen">
+    <div class="splash-logo">
+      <span class="splash-lux">LUX</span><span class="splash-shop">SHOP</span>
+    </div>
+    <div class="splash-loader">
+      <div class="splash-bar"></div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container"></div>
+
+  <!-- Scroll To Top -->
+  <button id="scroll-top-btn" aria-label="Cuộn lên đầu trang">
+    <i class="fas fa-chevron-up"></i>
+  </button>
+
+  <!-- ==================== NAVIGATION ==================== -->
+  <nav id="main-nav">
+    <div class="nav-container">
+      <a href="#" class="nav-logo">
+        <span class="logo-lux">LUX</span><span class="logo-shop">SHOP</span>
+      </a>
+
+      <ul class="nav-links" id="nav-links">
+        <li><a href="#home" class="nav-link active">Trang chủ</a></li>
+        <li><a href="#products" class="nav-link">Sản phẩm</a></li>
+        <li><a href="#about" class="nav-link">Về chúng tôi</a></li>
+        <li><a href="#contact" class="nav-link">Liên hệ</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <div class="search-wrapper">
+          <input type="text" id="search-input" placeholder="Tìm kiếm sản phẩm..." />
+          <button class="search-btn" id="search-btn" aria-label="Tìm kiếm">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+
+        <button class="icon-btn" id="cart-btn" aria-label="Giỏ hàng">
+          <i class="fas fa-shopping-bag"></i>
+          <span class="badge" id="cart-badge">0</span>
+        </button>
+
+        <button class="icon-btn" aria-label="Tài khoản">
+          <i class="fas fa-user"></i>
+        </button>
+
+        <button class="hamburger" id="hamburger" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Search Results Dropdown -->
+    <div class="search-results" id="search-results"></div>
+  </nav>
+
+  <!-- ==================== HERO SECTION ==================== -->
+  <section id="home" class="hero-section">
+    <div class="hero-bg-gradient"></div>
+    <div class="hero-particles" id="hero-particles"></div>
+
+    <div class="hero-content">
+      <div class="hero-badge animate-fade-up">
+        <i class="fas fa-star"></i> Bộ sưu tập mùa hè 2024
+      </div>
+      <h1 class="hero-title animate-fade-up">
+        Khám Phá<br />
+        <span class="hero-title-accent">Bộ Sưu Tập</span><br />
+        Mới Nhất
+      </h1>
+      <p class="hero-subtitle animate-fade-up">
+        Trải nghiệm mua sắm đẳng cấp với hơn 10,000 sản phẩm cao cấp được tuyển chọn kỹ lưỡng từ các thương hiệu hàng đầu thế giới.
+      </p>
+      <div class="hero-cta animate-fade-up">
+        <a href="#products" class="btn btn-primary">
+          <i class="fas fa-shopping-bag"></i> Mua sắm ngay
+        </a>
+        <a href="#categories" class="btn btn-outline">
+          <i class="fas fa-compass"></i> Khám phá thêm
+        </a>
+      </div>
+
+      <div class="hero-stats animate-fade-up">
+        <div class="hero-stat">
+          <span class="stat-number">10K+</span>
+          <span class="stat-label">Sản phẩm</span>
+        </div>
+        <div class="hero-stat-divider"></div>
+        <div class="hero-stat">
+          <span class="stat-number">50K+</span>
+          <span class="stat-label">Khách hàng</span>
+        </div>
+        <div class="hero-stat-divider"></div>
+        <div class="hero-stat">
+          <span class="stat-number">99%</span>
+          <span class="stat-label">Hài lòng</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Floating Product Cards -->
+    <div class="hero-floats">
+      <div class="float-card float-card-1">
+        <img src="https://placehold.co/80x80/0a0f2c/f5a623?text=👟" alt="Sneaker" />
+        <div class="float-card-info">
+          <span class="float-card-name">Sneaker Limited</span>
+          <span class="float-card-price">980,000đ</span>
+        </div>
+      </div>
+      <div class="float-card float-card-2">
+        <img src="https://placehold.co/80x80/1a1a2e/e94560?text=🎧" alt="Tai nghe" />
+        <div class="float-card-info">
+          <span class="float-card-name">Tai Nghe Pro</span>
+          <span class="float-card-price">1,290,000đ</span>
+        </div>
+      </div>
+      <div class="float-card float-card-3">
+        <img src="https://placehold.co/80x80/2d1b69/f5a623?text=👜" alt="Túi da" />
+        <div class="float-card-info">
+          <span class="float-card-name">Túi Da Cao Cấp</span>
+          <span class="float-card-price">1,750,000đ</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-scroll-hint">
+      <span>Cuộn xuống</span>
+      <div class="scroll-mouse">
+        <div class="scroll-dot"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== FEATURED CATEGORIES ==================== -->
+  <section id="categories" class="categories-section">
+    <div class="container">
+      <div class="section-header reveal-up">
+        <span class="section-tag">Danh mục</span>
+        <h2 class="section-title">Khám Phá Theo Danh Mục</h2>
+        <p class="section-subtitle">Tìm kiếm sản phẩm yêu thích theo từng danh mục được phân loại cẩn thận</p>
+      </div>
+
+      <div class="categories-grid">
+        <div class="category-card reveal-up" data-category="fashion">
+          <div class="category-img-wrap">
+            <img src="https://placehold.co/600x400/0a0f2c/f5a623?text=Thời+Trang" alt="Thời Trang" />
+            <div class="category-overlay">
+              <i class="fas fa-tshirt category-icon"></i>
+            </div>
+          </div>
+          <div class="category-info">
+            <h3>Thời Trang</h3>
+            <span class="category-count">248 sản phẩm</span>
+          </div>
+          <a href="#products" class="category-link" data-filter="fashion">Xem tất cả <i class="fas fa-arrow-right"></i></a>
+        </div>
+
+        <div class="category-card reveal-up" data-category="electronics">
+          <div class="category-img-wrap">
+            <img src="https://placehold.co/600x400/1a1a2e/e94560?text=Điện+Tử" alt="Điện Tử" />
+            <div class="category-overlay">
+              <i class="fas fa-microchip category-icon"></i>
+            </div>
+          </div>
+          <div class="category-info">
+            <h3>Điện Tử</h3>
+            <span class="category-count">175 sản phẩm</span>
+          </div>
+          <a href="#products" class="category-link" data-filter="electronics">Xem tất cả <i class="fas fa-arrow-right"></i></a>
+        </div>
+
+        <div class="category-card reveal-up" data-category="home">
+          <div class="category-img-wrap">
+            <img src="https://placehold.co/600x400/16213e/0f3460?text=Gia+Dụng" alt="Gia Dụng" />
+            <div class="category-overlay">
+              <i class="fas fa-home category-icon"></i>
+            </div>
+          </div>
+          <div class="category-info">
+            <h3>Gia Dụng</h3>
+            <span class="category-count">312 sản phẩm</span>
+          </div>
+          <a href="#products" class="category-link" data-filter="home">Xem tất cả <i class="fas fa-arrow-right"></i></a>
+        </div>
+
+        <div class="category-card reveal-up" data-category="accessories">
+          <div class="category-img-wrap">
+            <img src="https://placehold.co/600x400/2d1b69/f5a623?text=Phụ+Kiện" alt="Phụ Kiện" />
+            <div class="category-overlay">
+              <i class="fas fa-gem category-icon"></i>
+            </div>
+          </div>
+          <div class="category-info">
+            <h3>Phụ Kiện</h3>
+            <span class="category-count">196 sản phẩm</span>
+          </div>
+          <a href="#products" class="category-link" data-filter="accessories">Xem tất cả <i class="fas fa-arrow-right"></i></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== FLASH SALE BANNER ==================== -->
+  <section class="flash-sale-section reveal-up">
+    <div class="flash-sale-bg"></div>
+    <div class="container">
+      <div class="flash-sale-inner">
+        <div class="flash-sale-left">
+          <div class="flash-badge">
+            <i class="fas fa-bolt"></i> Flash Sale
+          </div>
+          <h2 class="flash-title">Giảm Đến <span>50%</span></h2>
+          <p class="flash-subtitle">Ưu đãi có hạn – Nhanh tay kẻo lỡ!</p>
+        </div>
+        <div class="flash-sale-timer">
+          <div class="timer-label">Kết thúc sau:</div>
+          <div class="timer-blocks">
+            <div class="timer-block">
+              <span id="timer-hours">00</span>
+              <span class="timer-unit">Giờ</span>
+            </div>
+            <div class="timer-colon">:</div>
+            <div class="timer-block">
+              <span id="timer-minutes">00</span>
+              <span class="timer-unit">Phút</span>
+            </div>
+            <div class="timer-colon">:</div>
+            <div class="timer-block">
+              <span id="timer-seconds">00</span>
+              <span class="timer-unit">Giây</span>
+            </div>
+          </div>
+        </div>
+        <div class="flash-sale-right">
+          <a href="#products" class="btn btn-primary btn-flash">
+            <i class="fas fa-fire"></i> Mua ngay
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== PRODUCTS SECTION ==================== -->
+  <section id="products" class="products-section">
+    <div class="container">
+      <div class="section-header reveal-up">
+        <span class="section-tag">Sản phẩm</span>
+        <h2 class="section-title">Sản Phẩm Nổi Bật</h2>
+        <p class="section-subtitle">Những sản phẩm được khách hàng yêu thích và đánh giá cao nhất</p>
+      </div>
+
+      <div class="products-filter reveal-up">
+        <button class="filter-btn active" data-filter="all">Tất cả</button>
+        <button class="filter-btn" data-filter="fashion">Thời Trang</button>
+        <button class="filter-btn" data-filter="electronics">Điện Tử</button>
+        <button class="filter-btn" data-filter="home">Gia Dụng</button>
+        <button class="filter-btn" data-filter="accessories">Phụ Kiện</button>
+      </div>
+
+      <div class="products-grid" id="products-grid">
+        <!-- Products rendered by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== ABOUT SECTION ==================== -->
+  <section id="about" class="about-section">
+    <div class="container">
+      <div class="about-inner">
+        <div class="about-image reveal-left">
+          <img src="https://placehold.co/600x700/0a0f2c/f5a623?text=LuxShop+Premium" alt="Về LuxShop" />
+          <div class="about-badge-float">
+            <i class="fas fa-award"></i>
+            <div>
+              <strong>10 năm</strong>
+              <span>Kinh nghiệm</span>
+            </div>
+          </div>
+        </div>
+        <div class="about-content reveal-right">
+          <span class="section-tag">Về chúng tôi</span>
+          <h2 class="section-title">Thương Hiệu Mua Sắm<br />Đáng Tin Cậy</h2>
+          <p class="about-text">LuxShop là nền tảng thương mại điện tử hàng đầu Việt Nam, chuyên cung cấp các sản phẩm cao cấp từ các thương hiệu uy tín trên toàn thế giới. Chúng tôi cam kết mang đến trải nghiệm mua sắm tốt nhất cho khách hàng.</p>
+          <div class="about-features">
+            <div class="about-feature">
+              <i class="fas fa-shield-alt"></i>
+              <div>
+                <strong>Đảm bảo chính hãng</strong>
+                <span>100% sản phẩm có xuất xứ rõ ràng</span>
+              </div>
+            </div>
+            <div class="about-feature">
+              <i class="fas fa-truck"></i>
+              <div>
+                <strong>Giao hàng nhanh chóng</strong>
+                <span>2-5 ngày làm việc toàn quốc</span>
+              </div>
+            </div>
+            <div class="about-feature">
+              <i class="fas fa-undo"></i>
+              <div>
+                <strong>Đổi trả dễ dàng</strong>
+                <span>30 ngày đổi trả miễn phí</span>
+              </div>
+            </div>
+            <div class="about-feature">
+              <i class="fas fa-headset"></i>
+              <div>
+                <strong>Hỗ trợ 24/7</strong>
+                <span>Đội ngũ tư vấn chuyên nghiệp</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== TESTIMONIALS ==================== -->
+  <section class="testimonials-section">
+    <div class="container">
+      <div class="section-header reveal-up">
+        <span class="section-tag">Đánh giá</span>
+        <h2 class="section-title">Khách Hàng Nói Gì?</h2>
+        <p class="section-subtitle">Hàng nghìn khách hàng hài lòng với trải nghiệm mua sắm tại LuxShop</p>
+      </div>
+
+      <div class="testimonials-grid">
+        <div class="testimonial-card reveal-up">
+          <div class="testimonial-stars">
+            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+          </div>
+          <p class="testimonial-text">"Sản phẩm chất lượng tuyệt vời, đóng gói cẩn thận và giao hàng nhanh chóng. Tôi rất hài lòng với trải nghiệm mua sắm tại LuxShop!"</p>
+          <div class="testimonial-author">
+            <img src="https://placehold.co/60x60/f5a623/0a0f2c?text=NL" alt="Nguyễn Lan" />
+            <div>
+              <strong>Nguyễn Thị Lan</strong>
+              <span>Hà Nội</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card reveal-up">
+          <div class="testimonial-stars">
+            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+          </div>
+          <p class="testimonial-text">"Đã mua nhiều lần tại LuxShop. Chất lượng sản phẩm luôn đúng như mô tả, nhân viên tư vấn nhiệt tình và chuyên nghiệp. Sẽ tiếp tục ủng hộ!"</p>
+          <div class="testimonial-author">
+            <img src="https://placehold.co/60x60/e94560/ffffff?text=TM" alt="Trần Minh" />
+            <div>
+              <strong>Trần Văn Minh</strong>
+              <span>TP. Hồ Chí Minh</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card reveal-up">
+          <div class="testimonial-stars">
+            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+          </div>
+          <p class="testimonial-text">"Giá cả hợp lý, nhiều khuyến mãi hấp dẫn. Đặc biệt ưa thích tính năng thanh toán đa dạng và chính sách hoàn tiền rõ ràng. 5 sao!"</p>
+          <div class="testimonial-author">
+            <img src="https://placehold.co/60x60/0f3460/f5a623?text=PH" alt="Phạm Hương" />
+            <div>
+              <strong>Phạm Thị Hương</strong>
+              <span>Đà Nẵng</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== NEWSLETTER ==================== -->
+  <section id="contact" class="newsletter-section reveal-up">
+    <div class="newsletter-bg"></div>
+    <div class="container">
+      <div class="newsletter-inner">
+        <div class="newsletter-icon"><i class="fas fa-envelope-open-text"></i></div>
+        <h2 class="newsletter-title">Đăng Ký Nhận Ưu Đãi</h2>
+        <p class="newsletter-subtitle">Nhận thông báo về các sản phẩm mới và ưu đãi độc quyền sớm nhất</p>
+        <form class="newsletter-form" id="newsletter-form">
+          <input type="email" id="newsletter-email" placeholder="Nhập email của bạn..." required />
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-paper-plane"></i> Đăng ký
+          </button>
+        </form>
+        <p class="newsletter-note"><i class="fas fa-lock"></i> Chúng tôi tôn trọng quyền riêng tư của bạn. Không spam!</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <a href="#" class="nav-logo footer-logo">
+              <span class="logo-lux">LUX</span><span class="logo-shop">SHOP</span>
+            </a>
+            <p class="footer-tagline">Nền tảng mua sắm cao cấp hàng đầu Việt Nam. Chất lượng, uy tín, đẳng cấp.</p>
+            <div class="footer-socials">
+              <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+              <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+              <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+              <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+            </div>
+          </div>
+
+          <div class="footer-col">
+            <h4>Mua sắm</h4>
+            <ul>
+              <li><a href="#">Thời Trang</a></li>
+              <li><a href="#">Điện Tử</a></li>
+              <li><a href="#">Gia Dụng</a></li>
+              <li><a href="#">Phụ Kiện</a></li>
+              <li><a href="#">Flash Sale</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-col">
+            <h4>Hỗ trợ</h4>
+            <ul>
+              <li><a href="#">Trung tâm trợ giúp</a></li>
+              <li><a href="#">Chính sách đổi trả</a></li>
+              <li><a href="#">Chính sách bảo mật</a></li>
+              <li><a href="#">Điều khoản dịch vụ</a></li>
+              <li><a href="#">Liên hệ chúng tôi</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-col">
+            <h4>Liên hệ</h4>
+            <ul class="footer-contact">
+              <li><i class="fas fa-map-marker-alt"></i> 123 Đường Nguyễn Huệ, Q.1, TP.HCM</li>
+              <li><i class="fas fa-phone"></i> 1800 6868</li>
+              <li><i class="fas fa-envelope"></i> support@luxshop.vn</li>
+              <li><i class="fas fa-clock"></i> 8:00 – 22:00 hàng ngày</li>
+            </ul>
+            <div class="payment-methods">
+              <h4>Thanh toán</h4>
+              <div class="payment-icons">
+                <span class="pay-icon" title="Visa"><i class="fab fa-cc-visa"></i></span>
+                <span class="pay-icon" title="Mastercard"><i class="fab fa-cc-mastercard"></i></span>
+                <span class="pay-icon" title="PayPal"><i class="fab fa-paypal"></i></span>
+                <span class="pay-icon momo-icon" title="Momo">MoMo</span>
+                <span class="pay-icon zalopay-icon" title="ZaloPay">Zalo</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">
+        <p>© 2024 LuxShop. Tất cả quyền được bảo lưu.</p>
+        <p>Thiết kế với <i class="fas fa-heart" style="color:#f5a623"></i> tại Việt Nam</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==================== CART SIDEBAR ==================== -->
+  <div class="cart-overlay" id="cart-overlay"></div>
+  <aside class="cart-sidebar" id="cart-sidebar">
+    <div class="cart-header">
+      <h3><i class="fas fa-shopping-bag"></i> Giỏ hàng</h3>
+      <button class="cart-close" id="cart-close" aria-label="Đóng giỏ hàng">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="cart-items" id="cart-items">
+      <!-- Cart items rendered by JS -->
+    </div>
+    <div class="cart-empty" id="cart-empty">
+      <i class="fas fa-shopping-bag"></i>
+      <p>Giỏ hàng của bạn đang trống</p>
+      <a href="#products" class="btn btn-primary btn-sm">Mua sắm ngay</a>
+    </div>
+    <div class="cart-footer" id="cart-footer">
+      <div class="cart-subtotal">
+        <span>Tạm tính:</span>
+        <span id="cart-subtotal">0đ</span>
+      </div>
+      <div class="cart-shipping">
+        <span>Phí vận chuyển:</span>
+        <span id="cart-shipping">Miễn phí</span>
+      </div>
+      <div class="cart-total">
+        <span>Tổng cộng:</span>
+        <span id="cart-total">0đ</span>
+      </div>
+      <button class="btn btn-primary btn-full" id="checkout-btn">
+        <i class="fas fa-lock"></i> Tiến hành thanh toán
+      </button>
+    </div>
+  </aside>
+
+  <!-- ==================== PAYMENT MODAL ==================== -->
+  <div class="modal-overlay" id="payment-modal">
+    <div class="payment-modal-content">
+      <button class="modal-close" id="modal-close" aria-label="Đóng">
+        <i class="fas fa-times"></i>
+      </button>
+
+      <!-- Step Indicator -->
+      <div class="steps-indicator">
+        <div class="step active" id="step-ind-1">
+          <div class="step-circle">1</div>
+          <span>Đơn hàng</span>
+        </div>
+        <div class="step-line"></div>
+        <div class="step" id="step-ind-2">
+          <div class="step-circle">2</div>
+          <span>Giao hàng</span>
+        </div>
+        <div class="step-line"></div>
+        <div class="step" id="step-ind-3">
+          <div class="step-circle">3</div>
+          <span>Thanh toán</span>
+        </div>
+      </div>
+
+      <!-- Step 1: Order Summary -->
+      <div class="payment-step" id="payment-step-1">
+        <h3 class="step-title"><i class="fas fa-receipt"></i> Xác nhận đơn hàng</h3>
+        <div class="order-summary" id="order-summary">
+          <!-- Rendered by JS -->
+        </div>
+        <div class="order-totals">
+          <div class="order-row"><span>Tạm tính:</span><span id="modal-subtotal">0đ</span></div>
+          <div class="order-row"><span>Phí vận chuyển:</span><span id="modal-shipping">Miễn phí</span></div>
+          <div class="order-row order-row-total"><span>Tổng cộng:</span><span id="modal-total">0đ</span></div>
+        </div>
+        <button class="btn btn-primary btn-full mt-20" id="to-step-2">
+          Tiếp tục <i class="fas fa-arrow-right"></i>
+        </button>
+      </div>
+
+      <!-- Step 2: Shipping Info -->
+      <div class="payment-step hidden" id="payment-step-2">
+        <h3 class="step-title"><i class="fas fa-truck"></i> Thông tin giao hàng</h3>
+        <form id="shipping-form" novalidate>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Họ và tên <span class="required">*</span></label>
+              <input type="text" id="ship-name" placeholder="Nguyễn Văn A" />
+              <span class="field-error" id="err-name"></span>
+            </div>
+            <div class="form-group">
+              <label>Số điện thoại <span class="required">*</span></label>
+              <input type="tel" id="ship-phone" placeholder="0912 345 678" />
+              <span class="field-error" id="err-phone"></span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Email <span class="required">*</span></label>
+            <input type="email" id="ship-email" placeholder="example@email.com" />
+            <span class="field-error" id="err-email"></span>
+          </div>
+          <div class="form-group">
+            <label>Địa chỉ <span class="required">*</span></label>
+            <input type="text" id="ship-address" placeholder="Số nhà, tên đường" />
+            <span class="field-error" id="err-address"></span>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Tỉnh / Thành phố</label>
+              <select id="ship-city">
+                <option value="">Chọn tỉnh/thành</option>
+                <option>Hà Nội</option>
+                <option>TP. Hồ Chí Minh</option>
+                <option>Đà Nẵng</option>
+                <option>Cần Thơ</option>
+                <option>Hải Phòng</option>
+                <option>Tỉnh khác</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Ghi chú</label>
+              <input type="text" id="ship-note" placeholder="Ghi chú thêm (nếu có)" />
+            </div>
+          </div>
+        </form>
+        <div class="step-actions">
+          <button class="btn btn-outline" id="back-to-1"><i class="fas fa-arrow-left"></i> Quay lại</button>
+          <button class="btn btn-primary" id="to-step-3">Tiếp tục <i class="fas fa-arrow-right"></i></button>
+        </div>
+      </div>
+
+      <!-- Step 3: Payment -->
+      <div class="payment-step hidden" id="payment-step-3">
+        <h3 class="step-title"><i class="fas fa-credit-card"></i> Phương thức thanh toán</h3>
+
+        <div class="payment-methods-select">
+          <label class="pay-method-option">
+            <input type="radio" name="pay-method" value="card" checked />
+            <span class="pay-method-label">
+              <i class="fab fa-cc-visa"></i> Thẻ tín dụng / Ghi nợ
+            </span>
+          </label>
+          <label class="pay-method-option">
+            <input type="radio" name="pay-method" value="momo" />
+            <span class="pay-method-label">
+              <i class="fas fa-wallet"></i> Ví MoMo
+            </span>
+          </label>
+          <label class="pay-method-option">
+            <input type="radio" name="pay-method" value="zalopay" />
+            <span class="pay-method-label">
+              <i class="fas fa-mobile-alt"></i> ZaloPay
+            </span>
+          </label>
+          <label class="pay-method-option">
+            <input type="radio" name="pay-method" value="bank" />
+            <span class="pay-method-label">
+              <i class="fas fa-university"></i> Chuyển khoản ngân hàng
+            </span>
+          </label>
+        </div>
+
+        <!-- Credit Card Form -->
+        <div class="card-form-wrap" id="card-form-wrap">
+          <!-- Card Visual -->
+          <div class="credit-card-visual" id="credit-card">
+            <div class="card-front" id="card-front">
+              <div class="card-chip"><i class="fas fa-microchip"></i></div>
+              <div class="card-number" id="card-display-number">•••• •••• •••• ••••</div>
+              <div class="card-bottom">
+                <div>
+                  <div class="card-label">Tên chủ thẻ</div>
+                  <div class="card-holder-name" id="card-display-name">TÊN CHỦ THẺ</div>
+                </div>
+                <div>
+                  <div class="card-label">Hết hạn</div>
+                  <div class="card-expiry" id="card-display-expiry">MM/YY</div>
+                </div>
+                <div class="card-logo"><i class="fab fa-cc-visa fa-2x"></i></div>
+              </div>
+            </div>
+            <div class="card-back" id="card-back">
+              <div class="card-stripe"></div>
+              <div class="card-cvv-area">
+                <div class="card-label">CVV</div>
+                <div class="card-cvv-display" id="card-display-cvv">•••</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card Inputs -->
+          <div class="card-inputs">
+            <div class="form-group">
+              <label>Số thẻ <span class="required">*</span></label>
+              <input type="text" id="card-number" placeholder="0000 0000 0000 0000" maxlength="19" />
+              <span class="field-error" id="err-card-number"></span>
+            </div>
+            <div class="form-group">
+              <label>Tên chủ thẻ <span class="required">*</span></label>
+              <input type="text" id="card-name" placeholder="NGUYEN VAN A" />
+              <span class="field-error" id="err-card-name"></span>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Ngày hết hạn <span class="required">*</span></label>
+                <input type="text" id="card-expiry" placeholder="MM/YY" maxlength="5" />
+                <span class="field-error" id="err-card-expiry"></span>
+              </div>
+              <div class="form-group">
+                <label>CVV <span class="required">*</span></label>
+                <input type="text" id="card-cvv" placeholder="•••" maxlength="3" />
+                <span class="field-error" id="err-card-cvv"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Momo / ZaloPay / Bank panels -->
+        <div class="qr-pay-wrap hidden" id="qr-pay-wrap">
+          <div class="qr-icon"><i class="fas fa-qrcode"></i></div>
+          <p id="qr-label">Quét mã QR để thanh toán</p>
+          <img src="https://placehold.co/200x200/ffffff/0a0f2c?text=QR+Code" alt="QR Code" class="qr-img" />
+        </div>
+        <div class="bank-transfer-wrap hidden" id="bank-transfer-wrap">
+          <div class="bank-info">
+            <div class="bank-row"><span>Ngân hàng:</span><strong>Vietcombank</strong></div>
+            <div class="bank-row"><span>Số tài khoản:</span><strong>1234567890</strong></div>
+            <div class="bank-row"><span>Tên tài khoản:</span><strong>CONG TY LUXSHOP</strong></div>
+            <div class="bank-row"><span>Nội dung CK:</span><strong id="bank-transfer-code">LUXSHOP-XXXXXX</strong></div>
+          </div>
+        </div>
+
+        <div class="step-actions">
+          <button class="btn btn-outline" id="back-to-2"><i class="fas fa-arrow-left"></i> Quay lại</button>
+          <button class="btn btn-primary" id="confirm-order">
+            <i class="fas fa-lock"></i> Xác nhận đặt hàng
+          </button>
+        </div>
+      </div>
+
+      <!-- Success Step -->
+      <div class="payment-step hidden" id="payment-success">
+        <div class="success-animation">
+          <div class="success-circle">
+            <i class="fas fa-check"></i>
+          </div>
+          <h3 class="success-title">Đặt hàng thành công!</h3>
+          <p class="success-subtitle">Cảm ơn bạn đã mua sắm tại LuxShop. Chúng tôi sẽ giao hàng trong 2-5 ngày làm việc.</p>
+          <div class="success-order-id">
+            Mã đơn hàng: <strong id="success-order-id">#LUXSHOP-000000</strong>
+          </div>
+          <button class="btn btn-primary mt-20" id="success-close">
+            <i class="fas fa-shopping-bag"></i> Tiếp tục mua sắm
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== LIVE CHAT ==================== -->
+  <div class="chat-widget" id="chat-widget">
+    <button class="chat-toggle-btn" id="chat-toggle" aria-label="Chat hỗ trợ">
+      <i class="fas fa-comment-dots" id="chat-icon-open"></i>
+      <i class="fas fa-times hidden" id="chat-icon-close"></i>
+      <span class="chat-badge hidden" id="chat-badge">1</span>
+    </button>
+
+    <div class="chat-window hidden" id="chat-window">
+      <div class="chat-header">
+        <div class="chat-header-info">
+          <img src="https://placehold.co/40x40/f5a623/0a0f2c?text=LS" alt="LuxShop Support" />
+          <div>
+            <strong>Hỗ Trợ Khách Hàng</strong>
+            <div class="chat-status">
+              <span class="chat-online-dot"></span> Đang trực tuyến
+            </div>
+          </div>
+        </div>
+        <button class="chat-close-btn" id="chat-close-btn" aria-label="Đóng chat">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div class="chat-messages" id="chat-messages">
+        <!-- Messages rendered by JS -->
+      </div>
+
+      <div class="chat-typing hidden" id="chat-typing">
+        <span></span><span></span><span></span>
+      </div>
+
+      <div class="chat-input-area">
+        <div class="chat-quick-replies" id="chat-quick-replies">
+          <button class="quick-reply" data-msg="Thông tin giao hàng">🚚 Giao hàng</button>
+          <button class="quick-reply" data-msg="Chính sách đổi trả">🔄 Đổi trả</button>
+          <button class="quick-reply" data-msg="Phương thức thanh toán">💳 Thanh toán</button>
+        </div>
+        <div class="chat-input-row">
+          <input type="text" id="chat-input" placeholder="Nhập tin nhắn..." />
+          <button class="chat-send-btn" id="chat-send" aria-label="Gửi tin nhắn">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Product Quick View Modal -->
+  <div class="modal-overlay quick-view-overlay hidden" id="quick-view-modal">
+    <div class="quick-view-content">
+      <button class="modal-close" id="quick-view-close"><i class="fas fa-times"></i></button>
+      <div class="quick-view-inner" id="quick-view-inner">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
