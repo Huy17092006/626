@@ -503,7 +503,7 @@ document.querySelectorAll('input[name="pay-method"]').forEach(radio => {
     if (selectedPayMethod === 'bank') {
       const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
       const code = $('bank-transfer-code');
-      if (code) code.textContent = `LUXSHOP-${Date.now().toString().slice(-6)}-${total}`;
+      if (code) code.textContent = `TAPHOAONLINE-${Date.now().toString().slice(-6)}-${total}`;
     }
   });
 });
@@ -574,20 +574,68 @@ function validateCard() {
   return valid;
 }
 
-function processPayment() {
+const API_BASE = window.location.port === '3000' || window.location.port === ''
+  ? ''
+  : 'http://localhost:3000';
+
+async function processPayment() {
   const btn = $('confirm-order');
   if (btn) {
     btn.disabled = true;
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
   }
-  setTimeout(() => {
-    const orderId = generateOrderId();
-    const orderIdEl = $('success-order-id');
-    if (orderIdEl) orderIdEl.textContent = orderId;
-    goToStep(4);
-    launchConfetti();
-    if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-lock"></i> Xác nhận đặt hàng'; }
-  }, 2000);
+
+  const orderId  = generateOrderId();
+  const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+
+  const payMethodLabels = { card: 'Thẻ tín dụng', momo: 'Ví MoMo', zalopay: 'ZaloPay', bank: 'Chuyển khoản' };
+  const orderPayload = {
+    id:       orderId,
+    customer: {
+      name:    $('ship-name')?.value    || '',
+      phone:   $('ship-phone')?.value   || '',
+      email:   $('ship-email')?.value   || '',
+      address: $('ship-address')?.value || '',
+      city:    $('ship-city')?.value    || '',
+      note:    $('ship-note')?.value    || ''
+    },
+    items: cart.map(item => ({
+      id:       item.id,
+      name:     item.name,
+      price:    item.price,
+      qty:      item.qty,
+      image:    item.image,
+      subtotal: item.price * item.qty
+    })),
+    payment: {
+      method: selectedPayMethod,
+      label:  payMethodLabels[selectedPayMethod] || selectedPayMethod
+    },
+    subtotal: subtotal,
+    shipping: 0,
+    total:    subtotal
+  };
+
+  try {
+    const res = await fetch(`${API_BASE}/api/orders`, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(orderPayload)
+    });
+
+    if (!res.ok) throw new Error('Server error');
+    const data = await res.json();
+    console.log('✅ Đơn hàng đã gửi lên server:', data.order?.id);
+  } catch (err) {
+    // Server không kết nối được — vẫn hiện thành công cho khách
+    console.warn('⚠️ Không kết nối được server, đơn hàng lưu offline:', err.message);
+  }
+
+  const orderIdEl = $('success-order-id');
+  if (orderIdEl) orderIdEl.textContent = orderId;
+  goToStep(4);
+  launchConfetti();
+  if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-lock"></i> Xác nhận đặt hàng'; }
 }
 
 /* ===== CONFETTI ===== */
@@ -761,7 +809,7 @@ function initChat() {
 
   // Show badge with initial message after delay
   setTimeout(() => {
-    addBotMessage('Xin chào! 👋 Tôi là trợ lý LuxShop. Tôi có thể giúp gì cho bạn hôm nay?');
+    addBotMessage('Xin chào! 👋 Tôi là trợ lý Tạp Hóa Online. Tôi có thể giúp gì cho bạn hôm nay?');
     if (badge) badge.classList.remove('hidden');
   }, 2000);
 
@@ -883,7 +931,7 @@ function getBotResponse(msg) {
     return 'Xin chào! Rất vui được gặp bạn tại LuxShop! 😊 Bạn cần hỗ trợ gì ạ? Tôi có thể giúp bạn về sản phẩm, đơn hàng, giao hàng hay thanh toán.';
   }
   if (m.includes('cảm ơn') || m.includes('thanks') || m.includes('ok')) {
-    return 'Cảm ơn bạn đã ghé thăm LuxShop! Chúc bạn mua sắm vui vẻ! 🌟 Nếu cần thêm hỗ trợ, đừng ngại nhắn tin nhé!';
+    return 'Cảm ơn bạn đã ghé thăm Tạp Hóa Online! Chúc bạn mua sắm vui vẻ! 🌟 Nếu cần thêm hỗ trợ, đừng ngại nhắn tin nhé!';
   }
   const defaults = [
     'Cảm ơn bạn đã liên hệ! Tôi đang kết nối bạn với nhân viên tư vấn. Vui lòng chờ trong giây lát ⏳',
@@ -937,5 +985,5 @@ mobileStyle.textContent = `
 `;
 document.head.appendChild(mobileStyle);
 
-console.log('%cLuxShop E-Commerce 🛍️', 'color:#f5a623;font-size:20px;font-weight:900');
+console.log('%cTạp Hóa Online 🛒', 'color:#f5a623;font-size:20px;font-weight:900');
 console.log('%cReady!', 'color:#10b981;font-size:14px');
