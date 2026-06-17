@@ -431,16 +431,7 @@ function selectPayment(method) {
 }
 
 function updateAmounts() {
-  const total = getCartTotal();
-  const fmt = formatPrice(total);
-  const orderNum = 'NEON-' + (orderCounter + 1);
-  if (document.getElementById('momoAmount')) document.getElementById('momoAmount').textContent = fmt;
-  if (document.getElementById('zalopayAmount')) document.getElementById('zalopayAmount').textContent = fmt;
-  if (document.getElementById('bankAmount')) document.getElementById('bankAmount').textContent = fmt;
-  if (document.getElementById('codAmount')) document.getElementById('codAmount').textContent = fmt;
-  if (document.getElementById('momoContent')) document.getElementById('momoContent').textContent = orderNum;
-  if (document.getElementById('zalopayContent')) document.getElementById('zalopayContent').textContent = orderNum;
-  if (document.getElementById('bankContent')) document.getElementById('bankContent').textContent = orderNum;
+  const fmt = formatPrice(getCartTotal());
   if (document.getElementById('confirmTotal')) document.getElementById('confirmTotal').textContent = fmt;
 }
 
@@ -469,12 +460,49 @@ function placeOrder() {
   orderCounter++;
   localStorage.setItem('orderCounter', orderCounter);
   const code = 'NEON-' + orderCounter;
+  const total = formatPrice(getCartTotal());
+
+  // Populate payment screen values
+  document.getElementById('psMomoAmount').textContent    = total;
+  document.getElementById('psMomoContent').textContent   = code;
+  document.getElementById('psZaloAmount').textContent    = total;
+  document.getElementById('psZaloContent').textContent   = code;
+  document.getElementById('psBankAmount').textContent    = total;
+  document.getElementById('psBankContent').textContent   = code;
+  document.getElementById('psCodAmount').textContent     = total;
+
+  // Set title
+  const titles = { momo:'Thanh toán qua MoMo', zalopay:'Thanh toán qua ZaloPay', bank:'Chuyển khoản ngân hàng', cod:'Thanh toán khi nhận hàng' };
+  document.getElementById('psTitle').textContent = titles[selectedPayment] || 'Thanh toán';
+
+  // Show correct body panel
+  ['psMomo','psZalo','psBank','psCod'].forEach(id => document.getElementById(id).classList.add('hidden'));
+  const panelMap = { momo:'psMomo', zalopay:'psZalo', bank:'psBank', cod:'psCod' };
+  document.getElementById(panelMap[selectedPayment]).classList.remove('hidden');
+
+  // Save order info for success screen
   document.getElementById('orderCode').textContent = code;
+
+  // Close checkout, open payment screen
   closeCheckout();
-  document.getElementById('successOverlay').classList.add('active');
+  document.getElementById('paymentScreenOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+
+  // Clear cart now
   cart = [];
   saveCart();
   updateCartUI();
+}
+
+function closePaymentScreen() {
+  document.getElementById('paymentScreenOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function confirmTransferred() {
+  closePaymentScreen();
+  document.getElementById('successOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
 }
 
 function closeSuccess() {
@@ -605,11 +633,17 @@ function copyText(text) {
 function scrollToProducts() { document.getElementById('products').scrollIntoView({ behavior: 'smooth' }); }
 function scrollToFeatures() { document.getElementById('features').scrollIntoView({ behavior: 'smooth' }); }
 
+// Close payment screen on backdrop click
+document.getElementById('paymentScreenOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closePaymentScreen();
+});
+
 // Close modals on Escape
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     closeProductModal();
     closeCheckout();
+    closePaymentScreen();
     closeSuccess();
     if (document.getElementById('searchOverlay').classList.contains('active')) toggleSearch();
     if (document.getElementById('chatWidget').classList.contains('active')) toggleChat();
