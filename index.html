@@ -434,67 +434,6 @@
           </label>
         </div>
 
-        <!-- Payment detail panels -->
-        <div class="pay-detail hidden" id="momoDetail">
-          <div class="qr-panel">
-            <div class="qr-code momo-qr">
-              <div class="qr-inner">
-                <div class="qr-logo">MoMo</div>
-                <div class="qr-pattern"></div>
-              </div>
-            </div>
-            <div class="qr-info">
-              <p class="qr-title">Quét QR hoặc chuyển tiền thủ công:</p>
-              <div class="qr-detail-row"><span>Ứng dụng:</span><strong>MoMo</strong></div>
-              <div class="qr-detail-row"><span>Số điện thoại:</span><strong class="neon-pink">0968 679 993</strong></div>
-              <div class="qr-detail-row"><span>Nội dung CK:</span><strong id="momoContent">NEON-ORDER-001</strong></div>
-              <div class="qr-detail-row"><span>Số tiền:</span><strong class="neon-green" id="momoAmount">0₫</strong></div>
-              <button class="btn-copy" onclick="copyText('0968679993')">📋 Sao Chép STĐ</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="pay-detail hidden" id="zalopayDetail">
-          <div class="qr-panel">
-            <div class="qr-code zalopay-qr">
-              <div class="qr-inner">
-                <div class="qr-logo zalo-l">Zalo<br>Pay</div>
-                <div class="qr-pattern"></div>
-              </div>
-            </div>
-            <div class="qr-info">
-              <p class="qr-title">Quét QR hoặc chuyển tiền thủ công:</p>
-              <div class="qr-detail-row"><span>Ứng dụng:</span><strong>ZaloPay</strong></div>
-              <div class="qr-detail-row"><span>Số điện thoại:</span><strong class="neon-blue">0968 679 993</strong></div>
-              <div class="qr-detail-row"><span>Nội dung CK:</span><strong id="zalopayContent">NEON-ORDER-001</strong></div>
-              <div class="qr-detail-row"><span>Số tiền:</span><strong class="neon-green" id="zalopayAmount">0₫</strong></div>
-              <button class="btn-copy" onclick="copyText('0968679993')">📋 Sao Chép STĐ</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="pay-detail hidden" id="bankDetail">
-          <div class="bank-panel">
-            <div class="bank-icon">🏦</div>
-            <div class="bank-details">
-              <h4>Thông Tin Chuyển Khoản</h4>
-              <div class="bank-row"><span>Số tài khoản:</span><strong class="neon-cyan">0968 679 993</strong><button class="btn-copy-sm" onclick="copyText('0968679993')">Copy</button></div>
-              <div class="bank-row"><span>Chủ tài khoản:</span><strong>NEONSHOP</strong></div>
-              <div class="bank-row"><span>Ngân hàng:</span><strong>MB Bank / Vietcombank</strong></div>
-              <div class="bank-row"><span>Nội dung:</span><strong id="bankContent">NEON-ORDER-001</strong></div>
-              <div class="bank-row"><span>Số tiền:</span><strong class="neon-green" id="bankAmount">0₫</strong></div>
-              <p class="bank-note">⚠️ Vui lòng chuyển đúng nội dung để đơn hàng được xử lý nhanh nhất!</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="pay-detail hidden" id="codDetail">
-          <div class="cod-panel">
-            <div class="cod-icon">🏍️</div>
-            <p>Shipper sẽ liên hệ trước khi giao hàng. Chuẩn bị đúng số tiền: <strong class="neon-green" id="codAmount">0₫</strong></p>
-          </div>
-        </div>
-
         <div class="step-btns">
           <button class="btn-ghost" onclick="goToStep(1)">← Quay Lại</button>
           <button class="btn-primary" onclick="goToStep(3)">Xác Nhận →</button>
@@ -517,6 +456,125 @@
           <button class="btn-checkout" onclick="placeOrder()">🚀 Đặt Hàng Ngay</button>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── PAYMENT SCREEN MODAL ─── -->
+<div class="modal-overlay" id="paymentScreenOverlay">
+  <div class="payment-screen-modal" id="paymentScreenModal">
+    <div class="ps-header">
+      <div class="ps-header-left">
+        <span class="ps-step-tag">Bước cuối · Chuyển tiền</span>
+        <h2 id="psTitle">Thanh toán qua MoMo</h2>
+      </div>
+      <button class="ps-close-btn" onclick="closePaymentScreen()">✕</button>
+    </div>
+
+    <!-- MoMo screen -->
+    <div class="ps-body hidden" id="psMomo">
+      <div class="ps-app-banner momo-banner">
+        <div class="ps-app-logo momo-big">MoMo</div>
+        <p>Mở ứng dụng MoMo → Chuyển tiền → Nhập số dưới đây</p>
+      </div>
+      <div class="ps-account-block">
+        <div class="ps-label">Số điện thoại nhận</div>
+        <div class="ps-number momo-num">0968 679 993</div>
+        <button class="ps-copy-btn momo-copy" onclick="copyText('0968679993')">
+          <span>📋</span> Sao chép số
+        </button>
+      </div>
+      <div class="ps-info-rows">
+        <div class="ps-info-row">
+          <span>Số tiền</span>
+          <strong class="ps-amount" id="psMomoAmount">0₫</strong>
+        </div>
+        <div class="ps-info-row">
+          <span>Nội dung chuyển khoản</span>
+          <strong id="psMomoContent" class="ps-content-val">NEON-001</strong>
+        </div>
+      </div>
+      <div class="ps-warning">⚠️ Nhập đúng nội dung chuyển khoản để đơn hàng được xử lý tự động!</div>
+      <button class="ps-confirm-btn momo-confirm" onclick="confirmTransferred()">✅ Tôi Đã Chuyển Tiền</button>
+    </div>
+
+    <!-- ZaloPay screen -->
+    <div class="ps-body hidden" id="psZalo">
+      <div class="ps-app-banner zalo-banner">
+        <div class="ps-app-logo zalo-big">ZaloPay</div>
+        <p>Mở ứng dụng ZaloPay → Chuyển tiền → Nhập số dưới đây</p>
+      </div>
+      <div class="ps-account-block">
+        <div class="ps-label">Số điện thoại nhận</div>
+        <div class="ps-number zalo-num">0968 679 993</div>
+        <button class="ps-copy-btn zalo-copy" onclick="copyText('0968679993')">
+          <span>📋</span> Sao chép số
+        </button>
+      </div>
+      <div class="ps-info-rows">
+        <div class="ps-info-row">
+          <span>Số tiền</span>
+          <strong class="ps-amount" id="psZaloAmount">0₫</strong>
+        </div>
+        <div class="ps-info-row">
+          <span>Nội dung chuyển khoản</span>
+          <strong id="psZaloContent" class="ps-content-val">NEON-001</strong>
+        </div>
+      </div>
+      <div class="ps-warning">⚠️ Nhập đúng nội dung chuyển khoản để đơn hàng được xử lý tự động!</div>
+      <button class="ps-confirm-btn zalo-confirm" onclick="confirmTransferred()">✅ Tôi Đã Chuyển Tiền</button>
+    </div>
+
+    <!-- Bank screen -->
+    <div class="ps-body hidden" id="psBank">
+      <div class="ps-app-banner bank-banner">
+        <div class="ps-app-logo bank-big">🏦</div>
+        <p>Mở app ngân hàng → Chuyển tiền → Nhập số tài khoản dưới đây</p>
+      </div>
+      <div class="ps-account-block">
+        <div class="ps-label">Số tài khoản (STK)</div>
+        <div class="ps-number bank-num">0968 679 993</div>
+        <button class="ps-copy-btn bank-copy" onclick="copyText('0968679993')">
+          <span>📋</span> Sao chép STK
+        </button>
+      </div>
+      <div class="ps-info-rows">
+        <div class="ps-info-row">
+          <span>Chủ tài khoản</span>
+          <strong>NEONSHOP</strong>
+        </div>
+        <div class="ps-info-row">
+          <span>Ngân hàng</span>
+          <strong>MB Bank / Vietcombank</strong>
+        </div>
+        <div class="ps-info-row">
+          <span>Số tiền</span>
+          <strong class="ps-amount" id="psBankAmount">0₫</strong>
+        </div>
+        <div class="ps-info-row">
+          <span>Nội dung chuyển khoản</span>
+          <strong id="psBankContent" class="ps-content-val">NEON-001</strong>
+        </div>
+      </div>
+      <div class="ps-warning">⚠️ Nhập đúng nội dung chuyển khoản để đơn hàng được xử lý tự động!</div>
+      <button class="ps-confirm-btn bank-confirm" onclick="confirmTransferred()">✅ Tôi Đã Chuyển Tiền</button>
+    </div>
+
+    <!-- COD screen -->
+    <div class="ps-body hidden" id="psCod">
+      <div class="ps-app-banner cod-banner">
+        <div class="ps-app-logo cod-big">🏍️</div>
+        <p>Thanh toán khi nhận hàng – không cần chuyển khoản trước</p>
+      </div>
+      <div class="ps-account-block">
+        <div class="ps-label">Số tiền chuẩn bị</div>
+        <div class="ps-number cod-num" id="psCodAmount">0₫</div>
+      </div>
+      <div class="ps-info-rows">
+        <div class="ps-info-row"><span>Shipper sẽ gọi trước khi giao</span><strong>~30 phút</strong></div>
+        <div class="ps-info-row"><span>Hỗ trợ đổi trả</span><strong>7 ngày</strong></div>
+      </div>
+      <button class="ps-confirm-btn cod-confirm" onclick="confirmTransferred()">✅ Xác Nhận Đặt Hàng</button>
     </div>
   </div>
 </div>
