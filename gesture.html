@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>✋ Gesture Magic – NeonShop</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #000; overflow: hidden; width: 100vw; height: 100vh; font-family: 'Courier New', monospace; }
+    #video { position: absolute; opacity: 0; pointer-events: none; top: 0; left: 0; width: 640px; height: 480px; }
+    #camCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+    #fxCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
+
+    #ui {
+      position: fixed; z-index: 10; top: 24px;
+      left: 50%; transform: translateX(-50%); text-align: center; pointer-events: none;
+    }
+    #gestureName {
+      font-size: 22px; font-weight: bold; color: #00f5ff;
+      text-shadow: 0 0 20px #00f5ff, 0 0 40px #00f5ff;
+      letter-spacing: 3px; min-width: 300px;
+      background: rgba(0,0,0,0.55); padding: 10px 28px;
+      border-radius: 40px; border: 1px solid rgba(0,245,255,0.3);
+      backdrop-filter: blur(12px); transition: color 0.3s, text-shadow 0.3s;
+    }
+
+    #instructions {
+      position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%);
+      z-index: 10; display: flex; gap: 8px; flex-wrap: wrap;
+      justify-content: center; max-width: 92vw;
+    }
+    .hint {
+      padding: 6px 13px;
+      background: rgba(0,0,0,0.6); border: 1px solid rgba(0,245,255,0.22);
+      border-radius: 20px; color: rgba(255,255,255,0.72); font-size: 12px;
+      backdrop-filter: blur(8px); white-space: nowrap;
+    }
+
+    #status {
+      position: fixed; top: 78px; left: 50%; transform: translateX(-50%);
+      z-index: 10; color: rgba(255,255,255,0.45); font-size: 12px; letter-spacing: 1px;
+    }
+
+    #backBtn {
+      position: fixed; top: 20px; right: 20px; z-index: 10;
+      padding: 10px 20px; background: rgba(0,0,0,0.6);
+      border: 1px solid rgba(0,245,255,0.4); border-radius: 20px;
+      color: #00f5ff; text-decoration: none; font-size: 12px;
+      letter-spacing: 2px; backdrop-filter: blur(10px); transition: all 0.3s;
+      font-family: 'Courier New', monospace;
+    }
+    #backBtn:hover { background: rgba(0,245,255,0.1); box-shadow: 0 0 20px rgba(0,245,255,0.3); }
+
+    #loadingOverlay {
+      position: fixed; inset: 0; background: #05050f; z-index: 100;
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; gap: 22px; transition: opacity 0.5s;
+    }
+    #loadingOverlay.fade { opacity: 0; pointer-events: none; }
+    #loadTitle {
+      font-size: 34px; font-weight: bold; color: #00f5ff;
+      text-shadow: 0 0 30px #00f5ff, 0 0 60px #00f5ff;
+      letter-spacing: 6px; animation: glow 2s ease-in-out infinite;
+    }
+    @keyframes glow { 0%,100% { opacity:1; } 50% { opacity:0.65; } }
+    #loadBar { width: 220px; height: 3px; background: rgba(0,245,255,0.15); border-radius: 2px; overflow: hidden; }
+    #loadFill {
+      height: 100%; width: 50%;
+      background: linear-gradient(90deg,#00f5ff,#bf00ff,#ff00aa);
+      animation: slide 1.4s linear infinite;
+    }
+    @keyframes slide { 0% { transform:translateX(-200%); } 100% { transform:translateX(300%); } }
+    #loadMsg { color: rgba(255,255,255,0.4); font-size: 13px; letter-spacing: 1px; }
+  </style>
+</head>
+<body>
+
+<div id="loadingOverlay">
+  <div id="loadTitle">✋ GESTURE MAGIC</div>
+  <div id="loadBar"><div id="loadFill"></div></div>
+  <p id="loadMsg">Đang tải AI nhận diện cử chỉ...</p>
+</div>
+
+<video id="video" width="640" height="480" autoplay muted playsinline></video>
+<canvas id="camCanvas"></canvas>
+<canvas id="fxCanvas"></canvas>
+
+<div id="ui"><div id="gestureName">Cho phép camera để bắt đầu</div></div>
+<div id="status"></div>
+
+<a href="index.html" id="backBtn">← NEONSHOP</a>
+
+<div id="instructions">
+  <div class="hint">✋ Mở tay → Pháo hoa</div>
+  <div class="hint">✊ Nắm đấm → Nổ tung</div>
+  <div class="hint">☝️ Chỉ tay → Lửa</div>
+  <div class="hint">✌️ Chữ V → Sóng cầu vồng</div>
+  <div class="hint">👍 Ngón cái → Sét điện</div>
+  <div class="hint">🤏 Véo → Xoáy</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+<script>
+const video      = document.getElementById('video');
+const camCanvas  = document.getElementById('camCanvas');
+const fxCanvas   = document.getElementById('fxCanvas');
+const camCtx     = camCanvas.getContext('2d');
+const fxCtx      = fxCanvas.getContext('2d');
+const nameEl     = document.getElementById('gestureName');
+const statusEl   = document.getElementById('status');
+const overlay    = document.getElementById('loadingOverlay');
+const loadMsg    = document.getElementById('loadMsg');
+
+let W = window.innerWidth, H = window.innerHeight;
+function resize() {
+  W = window.innerWidth; H = window.innerHeight;
+  camCanvas.width = fxCanvas.width = W;
+  camCanvas.height = fxCanvas.height = H;
+}
+resize();
+window.addEventListener('resize', resize);
+
+/* ── helpers ── */
+function mx(x) { return W - x * W; }
+function my(y) { return y * H; }
+
+/* ── state ── */
+let particles=[], fire=[], ripples=[], waves=[], shocks=[], bolts=[], vortex=[];
+let handLM = null;
+let curGesture = 'NONE', prevGesture = 'NONE';
+let holdFrames = 0;
+let buf = [];
+
+const COLORS = {
+  OPEN_HAND:'#ffd700', FIST:'#ff00aa', POINT:'#ff4400',
+  PEACE:'#00ff88', THUMB_UP:'#00f5ff', PINCH:'#bf00ff', NONE:'#666'
+};
+const LABELS = {
+  OPEN_HAND:'✋  OPEN HAND  — Pháo Hoa!',
+  FIST:     '✊  FIST  — Nắm Chặt...',
+  POINT:    '☝️  POINT  — Lửa Thiêng!',
+  PEACE:    '✌️  PEACE  — Sóng Cầu Vồng!',
+  THUMB_UP: '👍  THUMB UP  — Sét Điện!',
+  PINCH:    '🤏  PINCH  — Xoáy Ma Thuật!',
+  NONE:     '— Hướng tay về camera —'
+};
+
+/* ══ Particle classes ══ */
+
+class Pt {
+  constructor(x,y,vx,vy,color,life,size,g=0.1,d=0.98){
+    Object.assign(this,{x,y,vx,vy,color,life,ml:life,size,g,d});
+    this.alive=true;
+  }
+  tick(){
+    this.x+=this.vx; this.y+=this.vy;
+    this.vy+=this.g; this.vx*=this.d; this.vy*=this.d;
+    if(--this.life<=0) this.alive=false;
+  }
+  draw(ctx){
+    const t=this.life/this.ml, r=this.size*t;
+    if(r<0.3) return;
+    ctx.globalAlpha=t*t;
+    ctx.shadowBlur=r*5; ctx.shadowColor=this.color;
+    ctx.fillStyle=this.color;
+    ctx.beginPath(); ctx.arc(this.x,this.y,r,0,Math.PI*2); ctx.fill();
+  }
+}
+
+class FirePt {
+  constructor(x,y){
+    this.x=x; this.y=y;
+    const a=-Math.PI/2+(Math.random()-.5)*1.1, s=Math.random()*4+1.5;
+    this.vx=Math.cos(a)*s; this.vy=Math.sin(a)*s;
+    this.life=Math.random()*22+14; this.ml=this.life;
+    this.size=Math.random()*14+5; this.hue=Math.random()*45;
+    this.alive=true;
+  }
+  tick(){
+    this.x+=this.vx; this.y+=this.vy-0.35;
+    this.vx*=0.94; this.size*=0.93; this.life--;
+    if(this.life<=0||this.size<0.5) this.alive=false;
+  }
+  draw(ctx){
+    const t=this.life/this.ml;
+    ctx.globalAlpha=t;
+    const g=ctx.createRadialGradient(this.x,this.y,0,this.x,this.y,this.size);
+    g.addColorStop(0,`hsla(${60+this.hue},100%,100%,1)`);
+    g.addColorStop(0.35,`hsla(${30+this.hue},100%,65%,1)`);
+    g.addColorStop(0.7,`hsla(${this.hue},100%,50%,0.5)`);
+    g.addColorStop(1,`hsla(${this.hue},100%,30%,0)`);
+    ctx.fillStyle=g;
+    ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fill();
+  }
+}
+
+class Ripple {
+  constructor(x,y,color,maxR=220,spd=5){
+    this.x=x; this.y=y; this.r=8; this.maxR=maxR; this.spd=spd;
+    this.color=color; this.life=60; this.ml=60; this.alive=true;
+  }
+  tick(){ this.r+=this.spd; this.life--; if(this.r>=this.maxR||this.life<=0) this.alive=false; }
+  draw(ctx){
+    const t=1-this.r/this.maxR;
+    ctx.globalAlpha=t*0.85; ctx.strokeStyle=this.color;
+    ctx.lineWidth=3; ctx.shadowBlur=18; ctx.shadowColor=this.color;
+    ctx.beginPath(); ctx.arc(this.x,this.y,this.r,0,Math.PI*2); ctx.stroke();
+  }
+}
+
+class Shockwave {
+  constructor(x,y){ this.x=x; this.y=y; this.r=15; this.life=45; this.ml=45; this.alive=true; }
+  tick(){ this.r+=(420-this.r)*0.18; this.life--; if(this.life<=0) this.alive=false; }
+  draw(ctx){
+    const t=this.life/this.ml;
+    ctx.globalAlpha=t*t; ctx.strokeStyle='#ff00aa';
+    ctx.lineWidth=5*t; ctx.shadowBlur=40; ctx.shadowColor='#ff00aa';
+    ctx.beginPath(); ctx.arc(this.x,this.y,this.r,0,Math.PI*2); ctx.stroke();
+    ctx.globalAlpha=t*0.4; ctx.strokeStyle='#ffffff'; ctx.lineWidth=2; ctx.shadowBlur=10;
+    ctx.beginPath(); ctx.arc(this.x,this.y,this.r*0.6,0,Math.PI*2); ctx.stroke();
+  }
+}
+
+class Bolt {
+  constructor(x,y){ this.x=x; this.y=y; this.life=14; this.ml=14; this.alive=true; this.segs=this._gen(); }
+  _gen(){
+    const s=[];
+    const seg=(x1,y1,x2,y2,d=0)=>{
+      if(d>5){ s.push([x1,y1,x2,y2]); return; }
+      const mx=(x1+x2)/2+(Math.random()-.5)*70/(d+1);
+      const my=(y1+y2)/2+(Math.random()-.5)*30/(d+1);
+      seg(x1,y1,mx,my,d+1); seg(mx,my,x2,y2,d+1);
+      if(Math.random()<0.3&&d<3) seg(mx,my,mx+(Math.random()-.5)*130,my+Math.random()*70,d+2);
+    };
+    for(let i=0;i<3;i++){
+      const tx=this.x+(Math.random()-.5)*240, ty=this.y-160-Math.random()*100;
+      seg(this.x,this.y,tx,ty);
+    }
+    return s;
+  }
+  tick(){ this.life--; if(this.life<=0) this.alive=false; }
+  draw(ctx){
+    if(this.life%2===0) return;
+    ctx.globalAlpha=this.life/this.ml;
+    this.segs.forEach(([x1,y1,x2,y2])=>{
+      ctx.strokeStyle='#00f5ff'; ctx.lineWidth=2; ctx.shadowBlur=18; ctx.shadowColor='#00f5ff';
+      ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+      ctx.strokeStyle='#ffffff'; ctx.lineWidth=0.8; ctx.shadowBlur=6;
+      ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+    });
+  }
+}
+
+class VortexPt {
+  constructor(cx,cy){
+    this.cx=cx; this.cy=cy;
+    this.angle=Math.random()*Math.PI*2;
+    this.r=Math.random()*90+25;
+    this.spd=(Math.random()>.5?1:-1)*(0.04+Math.random()*0.06);
+    this.life=Math.random()*80+40; this.ml=this.life;
+    this.size=Math.random()*4+1; this.hue=Math.random()*360;
+    this.alive=true;
+  }
+  tick(){
+    this.angle+=this.spd; this.r-=0.5; this.life--;
+    if(this.life<=0||this.r<4) this.alive=false;
+  }
+  draw(ctx){
+    const t=this.life/this.ml;
+    const x=this.cx+Math.cos(this.angle)*this.r;
+    const y=this.cy+Math.sin(this.angle)*this.r;
+    ctx.globalAlpha=t;
+    ctx.fillStyle=`hsl(${this.hue},100%,65%)`;
+    ctx.shadowBlur=12; ctx.shadowColor=`hsl(${this.hue},100%,65%)`;
+    ctx.beginPath(); ctx.arc(x,y,this.size,0,Math.PI*2); ctx.fill();
+  }
+}
+
+/* ══ Gesture detection ══ */
+
+function fingers(lm){
+  return {
+    thumb:  lm[4].y < lm[3].y,
+    index:  lm[8].y < lm[6].y,
+    middle: lm[12].y < lm[10].y,
+    ring:   lm[16].y < lm[14].y,
+    pinky:  lm[20].y < lm[18].y,
+    pinch:  Math.hypot(lm[4].x-lm[8].x, lm[4].y-lm[8].y)
+  };
+}
+
+function classify(lm){
+  const f=fingers(lm);
+  const fourUp = f.index&&f.middle&&f.ring&&f.pinky;
+  const allDown = !f.index&&!f.middle&&!f.ring&&!f.pinky;
+  if(f.pinch<0.06&&!f.middle&&!f.ring&&!f.pinky) return 'PINCH';
+  if(fourUp) return 'OPEN_HAND';
+  if(allDown&&f.thumb) return 'THUMB_UP';
+  if(allDown) return 'FIST';
+  if(f.index&&!f.middle&&!f.ring&&!f.pinky) return 'POINT';
+  if(f.index&&f.middle&&!f.ring&&!f.pinky) return 'PEACE';
+  return 'NONE';
+}
+
+function smooth(g){
+  buf.push(g); if(buf.length>6) buf.shift();
+  const c={}; buf.forEach(x=>c[x]=(c[x]||0)+1);
+  return Object.entries(c).sort((a,b)=>b[1]-a[1])[0][0];
+}
+
+/* ══ Effects on gesture change ══ */
+
+function onGestureChange(from,to,lm){
+  if(from==='FIST'&&to!=='FIST'){
+    const cx=mx(lm[9].x), cy=my(lm[9].y);
+    shocks.push(new Shockwave(cx,cy));
+    shocks.push(new Shockwave(cx,cy));
+    const cols=['#ff00aa','#bf00ff','#ffffff','#ff6600','#ffd700'];
+    for(let i=0;i<70;i++){
+      const a=Math.random()*Math.PI*2, s=Math.random()*14+4;
+      particles.push(new Pt(cx,cy,Math.cos(a)*s,Math.sin(a)*s,
+        cols[Math.floor(Math.random()*cols.length)],55+Math.random()*30,Math.random()*7+2,0.18));
+    }
+  }
+  const c=COLORS[to]||'#888';
+  nameEl.textContent=LABELS[to]||LABELS.NONE;
+  nameEl.style.color=c;
+  nameEl.style.textShadow=to==='NONE'?'none':`0 0 20px ${c},0 0 40px ${c}`;
+}
+
+/* ══ Continuous effects ══ */
+
+function runEffect(g,lm){
+  holdFrames++;
+  switch(g){
+    case 'OPEN_HAND':{
+      if(holdFrames%2===0){
+        const tips=[4,8,12,16,20];
+        const cols=['#ffd700','#ff6600','#00f5ff','#ff00aa','#00ff88','#bf00ff'];
+        tips.forEach(i=>{
+          if(Math.random()<0.5){
+            const tx=mx(lm[i].x), ty=my(lm[i].y);
+            const a=Math.random()*Math.PI*2, s=Math.random()*5+1;
+            particles.push(new Pt(tx,ty,Math.cos(a)*s,Math.sin(a)*s-2,
+              cols[Math.floor(Math.random()*cols.length)],45+Math.random()*20,Math.random()*4+1,0.06));
+          }
+        });
+      }
+      if(holdFrames%10===0){
+        const cx=mx(lm[9].x), cy=my(lm[9].y);
+        const cols=['#ffd700','#ff00aa','#00f5ff','#bf00ff','#00ff88','#ff6600'];
+        ripples.push(new Ripple(cx,cy,cols[Math.floor(Math.random()*cols.length)],160,4));
+        for(let i=0;i<25;i++){
+          const a=Math.random()*Math.PI*2, s=Math.random()*7+3;
+          particles.push(new Pt(cx,cy-40,Math.cos(a)*s,Math.sin(a)*s,
+            cols[Math.floor(Math.random()*cols.length)],50,Math.random()*5+2));
+        }
+      }
+      break;
+    }
+    case 'POINT':{
+      const tx=mx(lm[8].x), ty=my(lm[8].y);
+      for(let i=0;i<6;i++) fire.push(new FirePt(tx+(Math.random()-.5)*16,ty));
+      break;
+    }
+    case 'PEACE':{
+      if(holdFrames%6===0){
+        const cx=(mx(lm[8].x)+mx(lm[12].x))/2;
+        const cy=(my(lm[8].y)+my(lm[12].y))/2;
+        const hue=(holdFrames*12)%360;
+        ripples.push(new Ripple(cx,cy,`hsl(${hue},100%,60%)`,260,5));
+        ripples.push(new Ripple(cx,cy,`hsl(${(hue+120)%360},100%,60%)`,190,4));
+        ripples.push(new Ripple(cx,cy,`hsl(${(hue+240)%360},100%,60%)`,130,3));
+        [8,12].forEach(ti=>{
+          const px=mx(lm[ti].x), py=my(lm[ti].y);
+          for(let i=0;i<3;i++){
+            const a=Math.random()*Math.PI*2;
+            particles.push(new Pt(px,py,Math.cos(a)*3,Math.sin(a)*3,
+              `hsl(${hue+60},100%,70%)`,30,Math.random()*3+1,0.03));
+          }
+        });
+      }
+      break;
+    }
+    case 'THUMB_UP':{
+      if(holdFrames%4===0){
+        const tx=mx(lm[4].x), ty=my(lm[4].y);
+        bolts.push(new Bolt(tx,ty));
+      }
+      if(holdFrames%2===0){
+        const tx=mx(lm[4].x), ty=my(lm[4].y);
+        for(let i=0;i<4;i++){
+          const a=-Math.PI/2+(Math.random()-.5)*1.8;
+          particles.push(new Pt(tx,ty,Math.cos(a)*9,Math.sin(a)*9,
+            '#00f5ff',22+Math.random()*10,Math.random()*3+1,0.25,0.93));
+        }
+      }
+      break;
+    }
+    case 'PINCH':{
+      const px=(mx(lm[4].x)+mx(lm[8].x))/2;
+      const py=(my(lm[4].y)+my(lm[8].y))/2;
+      if(holdFrames%2===0){
+        for(let i=0;i<5;i++) vortex.push(new VortexPt(px,py));
+        particles.push(new Pt(px,py,0,0,
+          `hsl(${holdFrames*6%360},100%,75%)`,12,10,0,1));
+      }
+      if(holdFrames%12===0){
+        ripples.push(new Ripple(px,py,`hsl(${holdFrames*6%360},100%,60%)`,120,4));
+      }
+      break;
+    }
+    case 'FIST':{
+      if(holdFrames%10===0){
+        const cx=mx(lm[9].x), cy=my(lm[9].y);
+        ripples.push(new Ripple(cx,cy,'#ff00aa',90,4));
+      }
+      break;
+    }
+  }
+}
+
+/* ══ Hand skeleton ══ */
+
+const CONN=[
+  [0,1],[1,2],[2,3],[3,4],
+  [0,5],[5,6],[6,7],[7,8],
+  [5,9],[9,10],[10,11],[11,12],
+  [9,13],[13,14],[14,15],[15,16],
+  [13,17],[17,18],[18,19],[19,20],
+  [0,17],[5,9],[9,13],[13,17]
+];
+
+function drawHand(ctx,lm,g){
+  const c=COLORS[g]||'#00f5ff';
+  ctx.globalAlpha=0.75; ctx.lineWidth=2;
+  ctx.strokeStyle=c; ctx.shadowBlur=12; ctx.shadowColor=c;
+  CONN.forEach(([a,b])=>{
+    ctx.beginPath();
+    ctx.moveTo(mx(lm[a].x),my(lm[a].y));
+    ctx.lineTo(mx(lm[b].x),my(lm[b].y));
+    ctx.stroke();
+  });
+  lm.forEach((pt,i)=>{
+    const x=mx(pt.x), y=my(pt.y);
+    const tip=[4,8,12,16,20].includes(i);
+    ctx.shadowBlur=tip?22:8; ctx.shadowColor=tip?'#fff':c;
+    ctx.fillStyle=tip?'#fff':c; ctx.globalAlpha=1;
+    ctx.beginPath(); ctx.arc(x,y,tip?5:3,0,Math.PI*2); ctx.fill();
+  });
+  ctx.shadowBlur=0; ctx.globalAlpha=1;
+}
+
+/* ══ Main loop ══ */
+
+function loop(){
+  /* camera */
+  if(video.readyState>=2){
+    camCtx.save();
+    camCtx.translate(W,0); camCtx.scale(-1,1);
+    camCtx.drawImage(video,0,0,W,H);
+    camCtx.restore();
+    camCtx.fillStyle='rgba(0,0,8,0.28)';
+    camCtx.fillRect(0,0,W,H);
+  }
+
+  /* effects */
+  fxCtx.clearRect(0,0,W,H);
+  fxCtx.save();
+
+  const tick=(arr)=>{ arr.forEach(p=>{p.tick();p.draw(fxCtx);}); return arr.filter(p=>p.alive); };
+  particles = tick(particles);
+  fire      = tick(fire);
+  ripples   = tick(ripples);
+  waves     = tick(waves);
+  shocks    = tick(shocks);
+  bolts     = tick(bolts);
+  vortex    = tick(vortex);
+
+  fxCtx.globalAlpha=1; fxCtx.shadowBlur=0;
+
+  if(handLM){
+    drawHand(fxCtx,handLM,curGesture);
+    runEffect(curGesture,handLM);
+  } else {
+    holdFrames=0;
+  }
+
+  fxCtx.restore();
+  requestAnimationFrame(loop);
+}
+
+/* ══ MediaPipe setup ══ */
+
+const hands = new Hands({
+  locateFile: f=>`https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}`
+});
+
+hands.setOptions({
+  maxNumHands: 1,
+  modelComplexity: 1,
+  minDetectionConfidence: 0.7,
+  minTrackingConfidence: 0.6
+});
+
+hands.onResults(res=>{
+  if(res.multiHandLandmarks&&res.multiHandLandmarks.length>0){
+    const lm=res.multiHandLandmarks[0];
+    handLM=lm;
+    const det=classify(lm);
+    const sm=smooth(det);
+    if(sm!==curGesture){
+      prevGesture=curGesture; curGesture=sm; holdFrames=0;
+      onGestureChange(prevGesture,curGesture,lm);
+    }
+    statusEl.textContent='';
+  } else {
+    handLM=null;
+    if(curGesture!=='NONE'){
+      prevGesture=curGesture; curGesture='NONE'; holdFrames=0;
+      nameEl.textContent=LABELS.NONE;
+      nameEl.style.color='#666'; nameEl.style.textShadow='none';
+    }
+    statusEl.textContent='👋 Không phát hiện tay — Đưa tay vào khung hình';
+  }
+});
+
+/* start camera */
+loadMsg.textContent='Đang khởi động camera...';
+const cam=new Camera(video,{
+  onFrame: async()=>{ await hands.send({image:video}); },
+  width:640, height:480
+});
+
+cam.start().then(()=>{
+  loadMsg.textContent='Sẵn sàng! Đang vào...';
+  setTimeout(()=>{
+    overlay.classList.add('fade');
+    setTimeout(()=>overlay.style.display='none',520);
+  },700);
+  loop();
+}).catch(err=>{
+  loadMsg.textContent='❌ Lỗi: '+err.message+' — Hãy cho phép quyền camera!';
+});
+</script>
+</body>
+</html>
