@@ -67,20 +67,13 @@
     }
 
     .logo-ring {
-      width: 180px;
-      height: 180px;
+      width: 190px;
+      height: 190px;
       border-radius: 50%;
-      background: radial-gradient(circle at 35% 35%, #2a1a0a, #0a0505);
-      border: 2px solid transparent;
-      background-clip: padding-box;
       position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow:
-        0 0 30px rgba(201,168,76,0.4),
-        0 0 60px rgba(201,168,76,0.15),
-        inset 0 0 30px rgba(201,168,76,0.05);
       animation: pulse-glow 3s ease-in-out infinite;
     }
     .logo-ring::before {
@@ -107,31 +100,12 @@
       50%       { box-shadow: 0 0 45px rgba(201,168,76,0.6), 0 0 90px rgba(201,168,76,0.25); }
     }
 
-    .logo-inner {
-      text-align: center;
-      line-height: 1;
-    }
-    .logo-b {
-      font-family: 'Playfair Display', serif;
-      font-size: 68px;
-      font-weight: 700;
-      background: linear-gradient(160deg, var(--gold-light) 0%, var(--gold) 50%, var(--gold-dark) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      line-height: 0.85;
+    .logo-img {
+      width: 184px;
+      height: 184px;
+      border-radius: 50%;
+      object-fit: cover;
       display: block;
-    }
-    .logo-text {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 14px;
-      letter-spacing: 3px;
-      background: linear-gradient(90deg, var(--rose) 0%, var(--gold-light) 50%, var(--rose) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      display: block;
-      margin-top: 4px;
     }
 
     .brand-name {
@@ -367,10 +341,7 @@
     <!-- Header -->
     <header class="header">
       <div class="logo-ring">
-        <div class="logo-inner">
-          <span class="logo-b">B</span>
-          <span class="logo-text">Beauty &amp; Style</span>
-        </div>
+        <img src="logo.png" alt="Beauty & Style" class="logo-img" />
       </div>
       <div class="brand-name">
         <h1>Beauty &amp; Style</h1>
@@ -429,7 +400,7 @@
           <div class="product-icon">💄</div>
           <div class="product-info">
             <div class="product-name">Son môi cao cấp</div>
-            <div class="product-desc">Shopee · Xem ngay</div>
+            <div class="product-desc">Xem ngay</div>
           </div>
           <span class="product-arrow">›</span>
         </a>
@@ -438,7 +409,7 @@
           <div class="product-icon">✨</div>
           <div class="product-info">
             <div class="product-name">Kem dưỡng da</div>
-            <div class="product-desc">Shopee · Xem ngay</div>
+            <div class="product-desc">Xem ngay</div>
           </div>
           <span class="product-arrow">›</span>
         </a>
@@ -447,7 +418,7 @@
           <div class="product-icon">💅</div>
           <div class="product-info">
             <div class="product-name">Sơn móng tay</div>
-            <div class="product-desc">Shopee · Xem ngay</div>
+            <div class="product-desc">Xem ngay</div>
           </div>
           <span class="product-arrow">›</span>
         </a>
@@ -456,7 +427,7 @@
           <div class="product-icon">🌸</div>
           <div class="product-info">
             <div class="product-name">Nước hoa nữ</div>
-            <div class="product-desc">Shopee · Xem ngay</div>
+            <div class="product-desc">Xem ngay</div>
           </div>
           <span class="product-arrow">›</span>
         </a>
@@ -465,7 +436,7 @@
           <div class="product-icon">👁️</div>
           <div class="product-info">
             <div class="product-name">Phấn mắt & mascara</div>
-            <div class="product-desc">Shopee · Xem ngay</div>
+            <div class="product-desc">Xem ngay</div>
           </div>
           <span class="product-arrow">›</span>
         </a>
@@ -474,7 +445,7 @@
           <div class="product-icon">🧴</div>
           <div class="product-info">
             <div class="product-name">Serum & tinh chất</div>
-            <div class="product-desc">Shopee · Xem ngay</div>
+            <div class="product-desc">Xem ngay</div>
           </div>
           <span class="product-arrow">›</span>
         </a>
@@ -483,7 +454,7 @@
           <div class="product-icon">👜</div>
           <div class="product-info">
             <div class="product-name">Phụ kiện thời trang</div>
-            <div class="product-desc">Shopee · Xem ngay</div>
+            <div class="product-desc">Xem ngay</div>
           </div>
           <span class="product-arrow">›</span>
         </a>
@@ -492,7 +463,7 @@
           <div class="product-icon">🛍️</div>
           <div class="product-info">
             <div class="product-name">Xem toàn bộ sản phẩm</div>
-            <div class="product-desc">Shopee · Hoa Iêm Shop</div>
+            <div class="product-desc">Hoa Iêm Shop</div>
           </div>
           <span class="product-arrow">›</span>
         </a>
